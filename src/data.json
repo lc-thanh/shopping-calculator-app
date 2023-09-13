@@ -1,0 +1,18 @@
+[
+  {
+    "key": "1",
+    "name": "thanh",
+    "cost": 14000,
+    "item": "hành, sả, tỏi, rau",
+    "add_date": "10/09/2023",
+    "note": "mua thay"
+  },
+  {
+    "key": "2",
+    "name": "ha",
+    "cost": 150000,
+    "item": "thịt",
+    "add_date": "07/08/2023",
+    "note": ""
+  }
+]
