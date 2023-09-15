@@ -119,7 +119,9 @@ const App = () => {
                         textAlign: 'center',
                     }}
                 >
-                    Ant Design ©2023 Created by Ant UED
+                    <span>Ant Design ©2023 Created by Ant UED</span>
+                    <br/>
+                    <span>App Created By: <a href={"https://www.facebook.com/lcthanh.kl/"} target={"_blank"}>ThanhKL</a></span>
                 </Footer>
             </Layout>
         </Layout>
