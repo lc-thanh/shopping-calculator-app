@@ -211,6 +211,9 @@ const TableItems = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
+    const resetSelectedRowKeys = () => {
+        setSelectedRowKeys([])
+    }
     // const sum_data = () => items_data.reduce((accumulator, object) => accumulator + object.cost, 0)
     // const sum_person = (person) => items_data.reduce((accumulator, object) => accumulator + (object.name === person ? object.cost : 0), 0)
 
@@ -246,7 +249,7 @@ const TableItems = () => {
                         Reload
                     </Button>
                     <AddItemFormInModel />
-                    <DeletePopconfirm selectedRowKeys={selectedRowKeys} />
+                    <DeletePopconfirm selectedRowKeys={selectedRowKeys} resetSelectedRowKeys={resetSelectedRowKeys} />
                 </Space>
             </div>
             <Spin spinning={loading}>

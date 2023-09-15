@@ -3,7 +3,7 @@ import { Button, Popconfirm, message } from 'antd';
 import {useDispatch, useSelector} from "react-redux";
 import {selectStatus} from "../tableItems/tableItemsSlice";
 import {fetchItems, deleteItemsSaga} from "../tableItems/tableItemsSlice";
-const DeletePopconfirm = ({ selectedRowKeys }) => {
+const DeletePopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
     const deleteStatus = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false);
@@ -20,6 +20,7 @@ const DeletePopconfirm = ({ selectedRowKeys }) => {
                 dispatch(fetchItems())
             }, 500)
             setOpen(false)
+            resetSelectedRowKeys()
         }
         if (deleteStatus === 'delete-fail') {
             setConfirmLoading(false)
