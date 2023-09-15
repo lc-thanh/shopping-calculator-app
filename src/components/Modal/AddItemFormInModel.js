@@ -1,94 +1,155 @@
-import React, { useState } from 'react';
-import {Button, Form, Input, InputNumber, Modal, Radio} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Input, InputNumber, message, Modal, Radio, Space} from 'antd';
+import {useDispatch, useSelector} from "react-redux";
+import {fetchItems, addItemSaga, selectStatus} from "../tableItems/tableItemsSlice";
 const { TextArea } = Input;
-const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+const CollectionCreateForm = ({ open, onExit, onCancel }) => {
+    const addStatus = useSelector(selectStatus)
+    const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false)
     const [form] = Form.useForm();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const startAddItem = () => {
+        form
+            .validateFields()
+            .then((values) => {
+                // form.resetFields();
+                dispatch(addItemSaga(values))
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
+    }
+
+    useEffect(() => {
+        if (addStatus === 'loading-add') {
+            setLoading(true)
+        }
+        if (addStatus === 'add-success') {
+            setLoading(false)
+            onExit()
+        }
+        if (addStatus === 'add-fail') {
+            setLoading(false)
+        }
+    }, [addStatus])
+
     return (
-        <Modal
-            open={open}
-            title="Create a new collection"
-            okText="Create"
-            cancelText="Cancel"
-            onCancel={onCancel}
-            onOk={() => {
-                form
-                    .validateFields()
-                    .then((values) => {
-                        form.resetFields();
-                        onCreate(values);
-                    })
-                    .catch((info) => {
-                        console.log('Validate Failed:', info);
-                    });
-            }}
-        >
-            <Form
-                form={form}
-                layout="vertical"
-                name="form_in_modal"
-                initialValues={{
-                    note: '',
-                }}
+        <>
+            {contextHolder}
+            <Modal
+                open={open}
+                title="Thêm hóa đơn mới"
+                // okText="Thêm"
+                // cancelText="Hủy"
+                onCancel={onCancel}
+                // onOk={() => {
+                //     form
+                //         .validateFields()
+                //         .then((values) => {
+                //             // form.resetFields();
+                //             dispatch(addItemSaga(values))
+                //         })
+                //         .catch((info) => {
+                //             console.log('Validate Failed:', info);
+                //         });
+                // }}
+                footer={[
+                    <Space>
+                        <Button
+                            onClick={onCancel}
+                        >Hủy</Button>
+                        <Button
+                            type="primary"
+                            loading={loading}
+                            onClick={startAddItem}
+                        >
+                            Thêm
+                        </Button>
+                    </Space>
+                ]}
             >
-                <Form.Item
-                    name="buyer"
-                    label="Ai mua?"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Chọn đi!'
-                        }
-                    ]}
+                <Form
+                    form={form}
+                    layout="vertical"
+                    name="form_in_modal"
+                    initialValues={{
+                        note: '',
+                    }}
                 >
-                    <Radio.Group buttonStyle="solid">
-                        <Radio.Button value="thanh"> Thành </Radio.Button>
-                        <Radio.Button value="ha"> Hà </Radio.Button>
-                        <Radio.Button value="an"> An </Radio.Button>
-                    </Radio.Group>
-                </Form.Item>
-                <Form.Item
-                    name="item"
-                    label="Mua gì?"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Điền đi! Đ được để trống!',
-                        },
-                    ]}
-                    // initialValue={'test'}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="cost"
-                    label="Mấy tiền?"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Điền đi! Đ được để trống!',
-                        },
-                    ]}
-                >
-                    <InputNumber min={0} max={1000000000} />
-                </Form.Item>
-                <Form.Item name="note" label="Ghi chú">
-                    <TextArea rows={4} />
-                </Form.Item>
-                {/*<Form.Item name="modifier" className="collection-create-form_last-form-item">*/}
-                {/*    <Radio.Group>*/}
-                {/*        <Radio value="public">Public</Radio>*/}
-                {/*        <Radio value="private">Private</Radio>*/}
-                {/*    </Radio.Group>*/}
-                {/*</Form.Item>*/}
-            </Form>
-        </Modal>
+                    <Form.Item
+                        name="name"
+                        label="Ai mua?"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Chọn đi!'
+                            }
+                        ]}
+                    >
+                        <Radio.Group buttonStyle="solid">
+                            <Radio.Button value="thanh"> Thành </Radio.Button>
+                            <Radio.Button value="ha"> Hà </Radio.Button>
+                            <Radio.Button value="an"> An </Radio.Button>
+                        </Radio.Group>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="item"
+                        label="Mua gì?"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Điền đi! Đ được để trống!',
+                            },
+                        ]}
+                    >
+                        <Input
+                            placeholder={"Đồ đã mua"}
+                            spellCheck={false}
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="cost"
+                        label="Mấy tiền?"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Điền đi! Đ được để trống!',
+                            },
+                        ]}
+                    >
+                        <InputNumber
+                            min={0}
+                            max={1000000000}
+                            formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                            style={{
+                                width: "30%"
+                            }}
+                        />
+                    </Form.Item>
+
+                    <Form.Item name="note" label="Ghi chú">
+                        <TextArea
+                            rows={4}
+                            spellCheck={false}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     );
 };
 const AddItemFormInModel = () => {
+    const dispatch = useDispatch()
     const [open, setOpen] = useState(false);
-    const onCreate = (values) => {
-        console.log('Received values of form: ', values);
+    const onExit = () => {
+        console.log('Thêm dữ liệu thành công!');
         setOpen(false);
+        dispatch(fetchItems());
     };
     return (
         <div>
@@ -102,7 +163,7 @@ const AddItemFormInModel = () => {
             </Button>
             <CollectionCreateForm
                 open={open}
-                onCreate={onCreate}
+                onExit={onExit}
                 onCancel={() => {
                     setOpen(false);
                 }}

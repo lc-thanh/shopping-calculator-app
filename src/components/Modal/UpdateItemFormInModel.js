@@ -53,6 +53,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, formName, defaultName,
                         <Radio.Button value="an"> An </Radio.Button>
                     </Radio.Group>
                 </Form.Item>
+
                 <Form.Item
                     name="item"
                     label="Mua gì?"
@@ -63,8 +64,12 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, formName, defaultName,
                         },
                     ]}
                 >
-                    <Input />
+                    <Input
+                        placeholder={"Đồ đã mua"}
+                        spellCheck={false}
+                    />
                 </Form.Item>
+
                 <Form.Item
                     name="cost"
                     label="Mấy tiền?"
@@ -75,17 +80,23 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, formName, defaultName,
                         },
                     ]}
                 >
-                    <InputNumber min={0} max={1000000000} />
+                    <InputNumber
+                        min={0}
+                        max={1000000000}
+                        formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                        style={{
+                            width: "30%"
+                        }}
+                    />
                 </Form.Item>
+
                 <Form.Item name="note" label="Ghi chú">
-                    <TextArea rows={4} />
+                    <TextArea
+                        rows={4}
+                        spellCheck={false}
+                    />
                 </Form.Item>
-                {/*<Form.Item name="modifier" className="collection-create-form_last-form-item">*/}
-                {/*    <Radio.Group>*/}
-                {/*        <Radio value="public">Public</Radio>*/}
-                {/*        <Radio value="private">Private</Radio>*/}
-                {/*    </Radio.Group>*/}
-                {/*</Form.Item>*/}
             </Form>
         </Modal>
     );
