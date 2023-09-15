@@ -28,6 +28,7 @@ const CollectionCreateForm = ({ open, onExit, onCancel }) => {
         }
         if (addStatus === 'add-success') {
             setLoading(false)
+            form.resetFields()
             onExit()
         }
         if (addStatus === 'add-fail') {
