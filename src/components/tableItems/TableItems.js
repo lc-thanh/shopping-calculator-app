@@ -7,12 +7,16 @@ import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchItems, selectItemsData, selectStatus} from "./tableItemsSlice";
 import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
-// import data from '../../data.json'
+import data from '../../data.json'
 
 const formatter = new Intl.NumberFormat('vi', {
     style: 'currency',
     currency: 'VND',
 })
+const date_formatter = (date) => {
+    const [day, month, year] = date.split('/')
+    return month + '/' + day + '/' + year
+}
 
 const columns = [
     {
@@ -92,9 +96,9 @@ const columns = [
         dataIndex: 'add_date',
         defaultSortOrder: 'descend',
         sorter: (a, b) => {
-            const date_a = new Date(a.add_date)
-            const date_b = new Date(b.add_date)
-            return date_a > date_b
+            const date_a = new Date(date_formatter(a.add_date))
+            const date_b = new Date(date_formatter(b.add_date))
+            return date_a - date_b
         },
     },
     {
@@ -112,8 +116,8 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const TableItems = () => {
-    const items_data = useSelector(selectItemsData)
-    // const items_data = data
+    // const items_data = useSelector(selectItemsData)
+    const items_data = data
     const table_status = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);

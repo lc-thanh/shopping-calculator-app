@@ -74,7 +74,13 @@ console.log(JSON.stringify(data))
 
 export const identity_data = 100
 
-const now_date = new Date()
+const date_formatter = (date) => {
+    const [day, month, year] = date.split('/')
+    return month + '/' + day + '/' + year
+}
+
+const now_date = new Date((date_formatter('16/09/2023')))
+console.log(now_date)
 console.log(now_date.toLocaleDateString('pt-PT'))
 
 export default data
