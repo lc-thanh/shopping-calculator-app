@@ -7,6 +7,7 @@ import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchItems, selectItemsData, selectStatus} from "./tableItemsSlice";
 import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
+// import data from '../../data.json'
 
 const formatter = new Intl.NumberFormat('vi', {
     style: 'currency',
@@ -76,8 +77,8 @@ const columns = [
                 value: 'rau',
             },
             {
-                text: 'New York',
-                value: 'New York',
+                text: 'Thịt',
+                value: 'Thịt',
             },
         ],
         onFilter: (value, record) => record.item.toLowerCase().includes(value.toLowerCase()),
@@ -89,8 +90,12 @@ const columns = [
     {
         title: 'Ngày thêm',
         dataIndex: 'add_date',
-        defaultSortOrder: 'ascend',
-        sorter: (a, b) => a.add_date < b.add_date,
+        defaultSortOrder: 'descend',
+        sorter: (a, b) => {
+            const date_a = new Date(a.add_date)
+            const date_b = new Date(b.add_date)
+            return date_a > date_b
+        },
     },
     {
         title: 'Chức năng',
@@ -108,6 +113,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 
 const TableItems = () => {
     const items_data = useSelector(selectItemsData)
+    // const items_data = data
     const table_status = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
