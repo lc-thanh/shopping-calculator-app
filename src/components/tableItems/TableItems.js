@@ -5,9 +5,9 @@ import {people} from "../../data_controller";
 import AddItemFormInModel from "../Modal/AddItemFormInModel";
 import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchItems, selectItemsData, selectStatus} from "./tableItemsSlice";
+import {fetchItems, selectItemsData, selectStatus, sumBill, billOnePerson} from "./tableItemsSlice";
 import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
-// import data from '../../data.json'
+import data from '../../data.json'
 
 const formatter = new Intl.NumberFormat('vi', {
     style: 'currency',
@@ -116,8 +116,8 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const TableItems = () => {
-    const items_data = useSelector(selectItemsData)
-    // const items_data = data
+    // const items_data = useSelector(selectItemsData)
+    const items_data = data
     const table_status = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -224,31 +224,29 @@ const TableItems = () => {
     const resetSelectedRowKeys = () => {
         setSelectedRowKeys([])
     }
-    // const sum_data = () => items_data.reduce((accumulator, object) => accumulator + object.cost, 0)
-    // const sum_person = (person) => items_data.reduce((accumulator, object) => accumulator + (object.name === person ? object.cost : 0), 0)
 
     return (
         <div>
             {contextHolder}
-            {/*<div style={{*/}
-            {/*    paddingBottom: 10,*/}
-            {/*    fontSize: 16,*/}
-            {/*    display: "flex",*/}
-            {/*    justifyContent: "space-evenly"*/}
-            {/*}}>*/}
-            {/*    <div><b>Tổng thiệt hại: </b><i style={{color: 'red'}}>{formatter.format(sum_data())}</i></div>*/}
-            {/*    <div>Chia mỗi người: <i style={{color: 'red'}}>{formatter.format(sum_data() / 3)}</i></div>*/}
-            {/*</div>*/}
-            {/*<div style={{*/}
-            {/*    paddingBottom: 10,*/}
-            {/*    fontSize: 16,*/}
-            {/*    display: "flex",*/}
-            {/*    justifyContent: "space-evenly"*/}
-            {/*}}>*/}
-            {/*    <div>Thành chi: <i style={{color: 'blueviolet'}}>{formatter.format(sum_person("thanh"))}</i></div>*/}
-            {/*    <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(sum_person("ha"))}</i></div>*/}
-            {/*    <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(sum_person("an"))}</i></div>*/}
-            {/*</div>*/}
+            <div style={{
+                paddingBottom: 10,
+                fontSize: 16,
+                display: "flex",
+                justifyContent: "space-evenly"
+            }}>
+                <div><b>Tổng thiệt hại: </b><i style={{color: 'red'}}>{formatter.format(sumBill())}</i></div>
+                <div>Chia mỗi người: <i style={{color: 'red'}}>{formatter.format(sumBill() / 3)}</i></div>
+            </div>
+            <div style={{
+                paddingBottom: 10,
+                fontSize: 16,
+                display: "flex",
+                justifyContent: "space-evenly"
+            }}>
+                <div>Thành chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("thanh"))}</i></div>
+                <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("ha"))}</i></div>
+                <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("an"))}</i></div>
+            </div>
             <div style={{
                 alignItems: "start",
                 marginBottom: 20,
