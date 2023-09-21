@@ -228,25 +228,30 @@ const TableItems = () => {
     return (
         <div>
             {contextHolder}
-            <div style={{
-                paddingBottom: 10,
-                fontSize: 16,
-                display: "flex",
-                justifyContent: "space-evenly"
-            }}>
-                <div><b>Tổng thiệt hại: </b><i style={{color: 'red'}}>{formatter.format(sumBill())}</i></div>
-                <div>Chia mỗi người: <i style={{color: 'red'}}>{formatter.format(sumBill() / 3)}</i></div>
-            </div>
-            <div style={{
-                paddingBottom: 10,
-                fontSize: 16,
-                display: "flex",
-                justifyContent: "space-evenly"
-            }}>
-                <div>Thành chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("thanh"))}</i></div>
-                <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("ha"))}</i></div>
-                <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("an"))}</i></div>
-            </div>
+            {items_data.length !== 0 ? (
+                <>
+                    <div style={{
+                        paddingBottom: 10,
+                        fontSize: 16,
+                        display: "flex",
+                        justifyContent: "space-evenly"
+                    }}>
+                        <div><b>Tổng thiệt hại: </b><i style={{color: 'red'}}>{formatter.format(sumBill())}</i></div>
+                        <div>Chia mỗi người: <i style={{color: 'red'}}>{formatter.format(sumBill() / 3)}</i></div>
+                    </div>
+                    <div style={{
+                        paddingBottom: 10,
+                        fontSize: 16,
+                        display: "flex",
+                        justifyContent: "space-evenly"
+                    }}>
+                        <div>Thành chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("thanh"))}</i>
+                        </div>
+                        <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("ha"))}</i></div>
+                        <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("an"))}</i></div>
+                    </div>
+                </>
+            ) : ''}
             <div style={{
                 alignItems: "start",
                 marginBottom: 20,
