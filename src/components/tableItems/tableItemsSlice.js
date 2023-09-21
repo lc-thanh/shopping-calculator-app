@@ -57,13 +57,13 @@ export const selectItemsData = (state) => state.tableItems.itemData;
 
 export const selectStatus = (state) => state.tableItems.status;
 
-export const sumBill = () => {
-    const data = selectItemsData()
+export const selectSumBill = (state) => {
+    const data = selectItemsData(state)
     return data.reduce((accumulator, object) => accumulator + object.cost, 0)
 }
 
-export const billOnePerson = (person) => {
-    const data = selectItemsData()
+export const selectOnePersonBill = (state) => (person) => {
+    const data = selectItemsData(state)
     return data.reduce((accumulator, object) => accumulator + (object.name === person ? object.cost : 0), 0)
 };
 

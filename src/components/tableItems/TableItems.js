@@ -5,7 +5,13 @@ import {people} from "../../data_controller";
 import AddItemFormInModel from "../Modal/AddItemFormInModel";
 import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchItems, selectItemsData, selectStatus, sumBill, billOnePerson} from "./tableItemsSlice";
+import {
+    fetchItems,
+    selectItemsData,
+    selectStatus,
+    selectSumBill,
+    selectOnePersonBill
+} from "./tableItemsSlice";
 import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
 // import data from '../../data.json'
 
@@ -56,7 +62,7 @@ const columns = [
         // specify the condition of filtering result
         // here is that finding the name started with `value`
         onFilter: (value, record) => {
-            console.log(people[record.name])
+            // console.log(people[record.name])
             return people[record.name].indexOf(value) === 0
         },
         sorter: (a, b) => people[a.name].length - people[b.name].length,
@@ -117,6 +123,8 @@ const onChange = (pagination, filters, sorter, extra) => {
 
 const TableItems = () => {
     const items_data = useSelector(selectItemsData)
+    const sumBill = useSelector(selectSumBill)
+    const onePersonBill = useSelector(selectOnePersonBill)
     // const items_data = data
     const table_status = useSelector(selectStatus)
     const dispatch = useDispatch()
@@ -126,7 +134,7 @@ const TableItems = () => {
 
     useEffect(() => {
         dispatch(fetchItems())
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         console.log(table_status)
@@ -236,8 +244,8 @@ const TableItems = () => {
                         display: "flex",
                         justifyContent: "space-evenly"
                     }}>
-                        <div><b>Tổng thiệt hại: </b><i style={{color: 'red'}}>{formatter.format(sumBill())}</i></div>
-                        <div>Chia mỗi người: <i style={{color: 'red'}}>{formatter.format(sumBill() / 3)}</i></div>
+                        <div><b>Tổng thiệt hại: </b><i style={{color: 'red'}}>{formatter.format(sumBill)}</i></div>
+                        <div>Chia mỗi người: <i style={{color: 'red'}}>{formatter.format(sumBill / 3)}</i></div>
                     </div>
                     <div style={{
                         paddingBottom: 10,
@@ -245,10 +253,10 @@ const TableItems = () => {
                         display: "flex",
                         justifyContent: "space-evenly"
                     }}>
-                        <div>Thành chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("thanh"))}</i>
+                        <div>Thành chi: <i style={{color: 'blueviolet'}}>{formatter.format(onePersonBill("thanh"))}</i>
                         </div>
-                        <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("ha"))}</i></div>
-                        <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(billOnePerson("an"))}</i></div>
+                        <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(onePersonBill("ha"))}</i></div>
+                        <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(onePersonBill("an"))}</i></div>
                     </div>
                 </>
             ) : ''}
