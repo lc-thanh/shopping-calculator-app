@@ -7,7 +7,7 @@ import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchItems, selectItemsData, selectStatus, sumBill, billOnePerson} from "./tableItemsSlice";
 import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
-import data from '../../data.json'
+// import data from '../../data.json'
 
 const formatter = new Intl.NumberFormat('vi', {
     style: 'currency',
@@ -116,8 +116,8 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const TableItems = () => {
-    // const items_data = useSelector(selectItemsData)
-    const items_data = data
+    const items_data = useSelector(selectItemsData)
+    // const items_data = data
     const table_status = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
