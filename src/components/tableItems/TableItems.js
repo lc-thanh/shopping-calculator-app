@@ -19,10 +19,10 @@ const formatter = new Intl.NumberFormat('vi', {
     style: 'currency',
     currency: 'VND',
 })
-const date_formatter = (date) => {
-    const [day, month, year] = date.split('/')
-    return month + '/' + day + '/' + year
-}
+// const date_formatter = (date) => {
+//     const [day, month, year] = date.split('/')
+//     return month + '/' + day + '/' + year
+// }
 
 const columns = [
     {
@@ -100,10 +100,16 @@ const columns = [
     {
         title: 'Ngày thêm',
         dataIndex: 'add_date',
+        render: (_, {add_date}) => {
+            const date = new Date(Number(add_date))
+            return (
+                <span>{date.toLocaleDateString('pt-PT')}</span>
+            )
+        },
         defaultSortOrder: 'descend',
         sorter: (a, b) => {
-            const date_a = new Date(date_formatter(a.add_date))
-            const date_b = new Date(date_formatter(b.add_date))
+            const date_a = new Date(Number(a.add_date))
+            const date_b = new Date(Number(b.add_date))
             return date_a - date_b
         },
     },

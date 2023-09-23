@@ -7,14 +7,14 @@ function fetchHttpApi(payload) {
     const now_date = new Date()
     console.log({
         ...payload,
-        add_date: now_date.toLocaleDateString('pt-PT')
+        add_date: now_date.getTime()
     })
     return axios({
         method: "POST",
         url: "https://api-shopping-calculation-app.onrender.com/api/v1/receipts",
         data: {
             ...payload,
-            add_date: now_date.toLocaleDateString('pt-PT')
+            add_date: now_date.getTime()
         }
     });
 }
