@@ -1,44 +1,72 @@
-import React, { useState } from 'react';
-import {Button, Form, Input, InputNumber, Modal, Radio} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Input, InputNumber, Modal, Radio, Space} from 'antd';
+import {useDispatch, useSelector} from "react-redux";
+import {fetchItems, selectStatus, updateItemSaga} from "../tableItems/tableItemsSlice";
 const { TextArea } = Input;
-const CollectionCreateForm = ({ open, onCreate, onCancel, formName, defaultName, defaultItem, defaultCost, defaultNote }) => {
+const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, defaultName, defaultItem, defaultCost, defaultNote }) => {
     const [updateForm] = Form.useForm();
+
+    const startUpdateItem = () => {
+        updateForm
+            .validateFields()
+            .then((values) => {
+                // updateForm.resetFields();
+                onCreate(values);
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
+    }
 
     return (
         <Modal
             open={open}
             title="Sửa hóa đơn"
-            okText="Sửa"
-            cancelText="Hủy"
+            // okText="Sửa"
+            // cancelText="Hủy"
             onCancel={() => {
                 updateForm.resetFields();
                 onCancel();
             }}
-            onOk={() => {
-                updateForm
-                    .validateFields()
-                    .then((values) => {
-                        updateForm.resetFields();
-                        onCreate(values);
-                    })
-                    .catch((info) => {
-                        console.log('Validate Failed:', info);
-                    });
-            }}
+            // onOk={() => {
+            //     updateForm
+            //         .validateFields()
+            //         .then((values) => {
+            //             updateForm.resetFields();
+            //             onCreate(values);
+            //         })
+            //         .catch((info) => {
+            //             console.log('Validate Failed:', info);
+            //         });
+            // }}
+            footer={[
+                <Space>
+                    <Button
+                        onClick={onCancel}
+                    >Hủy</Button>
+                    <Button
+                        type="primary"
+                        loading={loading}
+                        onClick={startUpdateItem}
+                    >
+                        Sửa
+                    </Button>
+                </Space>
+            ]}
         >
             <Form
                 form={updateForm}
                 layout="vertical"
                 name={formName}
                 initialValues={{
-                    buyer: defaultName,
+                    name: defaultName,
                     item: defaultItem,
                     cost: defaultCost,
                     note: defaultNote
                 }}
             >
                 <Form.Item
-                    name="buyer"
+                    name="name"
                     label="Ai mua?"
                     rules={[
                         {
@@ -102,11 +130,30 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, formName, defaultName,
     );
 };
 const AddItemFormInModel = ({ formName, defaultName, defaultItem, defaultCost, defaultNote }) => {
+    const updateStatus = useSelector(selectStatus)
+    const dispatch = useDispatch()
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (updateStatus === 'loading-update') {
+            setLoading(true)
+        }
+        if (updateStatus === 'update-success') {
+            setLoading(false)
+            setOpen(false)
+            dispatch(fetchItems())
+        }
+        if (updateStatus === 'update-fail') {
+            setLoading(false)
+        }
+    }, [updateStatus])
+
     const onCreate = (values) => {
+        dispatch(updateItemSaga({...values, formName}))
         console.log('Received values of form: ', {...values, formName});
-        setOpen(false);
     };
+
     return (
         <div>
             <Button
@@ -119,6 +166,7 @@ const AddItemFormInModel = ({ formName, defaultName, defaultItem, defaultCost, d
             </Button>
             <CollectionCreateForm
                 open={open}
+                loading={loading}
                 onCreate={onCreate}
                 onCancel={() => {
                     setOpen(false);

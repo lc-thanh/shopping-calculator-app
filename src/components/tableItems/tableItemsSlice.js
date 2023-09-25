@@ -39,6 +39,15 @@ export const tableItemsSlice = createSlice({
         deleteItemsSagaFail: (state) => {
             state.status = 'delete-fail'
         },
+        updateItemSaga: (state, action) => {
+            state.status = 'loading-update'
+        },
+        updateItemSagaSuccess: (state) => {
+            state.status = 'update-success'
+        },
+        updateItemSagaFail: (state) => {
+            state.status = 'update-fail'
+        }
     }
 })
 
@@ -50,7 +59,10 @@ export const { fetchItems,
     addItemSagaFail,
     deleteItemsSaga,
     deleteItemsSagaSuccess,
-    deleteItemsSagaFail
+    deleteItemsSagaFail,
+    updateItemSaga,
+    updateItemSagaSuccess,
+    updateItemSagaFail,
 } = tableItemsSlice.actions;
 
 export const selectItemsData = (state) => state.tableItems.itemData;

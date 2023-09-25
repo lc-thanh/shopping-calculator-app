@@ -83,13 +83,13 @@ const columns = [
         dataIndex: 'item',
         filters: [
             {
-                text: 'Rau',
-                value: 'rau',
+                text: 'Nợ',
+                value: 'nợ',
             },
-            {
-                text: 'Thịt',
-                value: 'Thịt',
-            },
+            // {
+            //     text: 'Thịt',
+            //     value: 'Thịt',
+            // },
         ],
         onFilter: (value, record) => record.item.toLowerCase().includes(value.toLowerCase()),
     },
@@ -212,6 +212,28 @@ const TableItems = () => {
                 messageApi.open({
                     type: 'error',
                     content: 'Xóa thất bại',
+                    style: {
+                        marginLeft: 200
+                    },
+                });
+                break
+            }
+
+            case 'update-success': {
+                messageApi.open({
+                    type: 'success',
+                    content: 'Cập nhật hóa đơn thành công!',
+                    style: {
+                        marginLeft: 200
+                    },
+                });
+                break
+            }
+
+            case 'update-fail': {
+                messageApi.open({
+                    type: 'error',
+                    content: 'Cập nhật thất bại',
                     style: {
                         marginLeft: 200
                     },
