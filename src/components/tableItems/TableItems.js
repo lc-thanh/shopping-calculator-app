@@ -7,12 +7,13 @@ import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
 import {useDispatch, useSelector} from "react-redux";
 import {
     fetchItems,
-    selectItemsData,
     selectStatus,
     selectSumBill,
-    selectOnePersonBill
+    selectOnePersonBill,
+    selectFilteredItemsData
 } from "./tableItemsSlice";
 import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
+import MonthSelectDropDown from "../DropDown/MonthSelectDropDown";
 // import data from '../../data.json'
 
 const formatter = new Intl.NumberFormat('vi', {
@@ -128,7 +129,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const TableItems = () => {
-    const items_data = useSelector(selectItemsData)
+    const items_data = useSelector(selectFilteredItemsData)
     const sumBill = useSelector(selectSumBill)
     const onePersonBill = useSelector(selectOnePersonBill)
     // const items_data = data
@@ -265,7 +266,9 @@ const TableItems = () => {
         <div>
             {contextHolder}
             {items_data.length !== 0 ? (
-                <>
+                <div style={{
+                    marginBottom: 10
+                }}>
                     <div style={{
                         paddingBottom: 10,
                         fontSize: 16,
@@ -286,21 +289,29 @@ const TableItems = () => {
                         <div>Hà chi: <i style={{color: 'blueviolet'}}>{formatter.format(onePersonBill("ha"))}</i></div>
                         <div>An chi: <i style={{color: 'blueviolet'}}>{formatter.format(onePersonBill("an"))}</i></div>
                     </div>
-                </>
+                </div>
             ) : ''}
             <div style={{
-                alignItems: "start",
+                display: "flex",
                 marginBottom: 20,
-                width: "min-content"
+                justifyContent: "space-between",
+                alignItems: "center"
             }}>
-                <Space>
-                    <Button type="primary" onClick={startFetchItems} loading={loading}>
-                        Reload
-                    </Button>
-                    <AddItemFormInModel />
-                    <DeletePopconfirm selectedRowKeys={selectedRowKeys} resetSelectedRowKeys={resetSelectedRowKeys} />
-                </Space>
+                <div style={{
+                    alignItems: "start",
+                    width: "min-content"
+                }}>
+                    <Space>
+                        <Button type="primary" onClick={startFetchItems} loading={loading}>
+                            Reload
+                        </Button>
+                        <AddItemFormInModel />
+                        <DeletePopconfirm selectedRowKeys={selectedRowKeys} resetSelectedRowKeys={resetSelectedRowKeys} />
+                    </Space>
+                </div>
+                <MonthSelectDropDown />
             </div>
+
             <Spin spinning={loading}>
                 <Table rowSelection={rowSelection} columns={columns} dataSource={items_data} onChange={onChange}/>
             </Spin>

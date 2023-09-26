@@ -42,7 +42,10 @@ const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, def
             footer={[
                 <Space>
                     <Button
-                        onClick={onCancel}
+                        onClick={() => {
+                            updateForm.resetFields();
+                            onCancel();
+                        }}
                     >Hủy</Button>
                     <Button
                         type="primary"

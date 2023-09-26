@@ -4,6 +4,7 @@ import {createSlice} from "@reduxjs/toolkit";
 const initialState = {
     itemData: [],
     status: "idle",
+    dateRange: [],
 };
 
 export const tableItemsSlice = createSlice({
@@ -47,7 +48,11 @@ export const tableItemsSlice = createSlice({
         },
         updateItemSagaFail: (state) => {
             state.status = 'update-fail'
-        }
+        },
+        setDateRange: (state, action) => {
+            state.dateRange = action.payload
+            console.log(state.dateRange)
+        },
     }
 })
 
@@ -63,19 +68,39 @@ export const { fetchItems,
     updateItemSaga,
     updateItemSagaSuccess,
     updateItemSagaFail,
+    setDateRange,
 } = tableItemsSlice.actions;
 
 export const selectItemsData = (state) => state.tableItems.itemData;
 
+export const selectFilteredItemsData = (state) => {
+    const itemsData = selectItemsData(state)
+    const dateRange = selectDateRange(state)
+
+    if (dateRange.length === 0) {
+        return itemsData
+    }
+
+    return itemsData.filter((item) => {
+        const add_date = new Date(Number(item.add_date))
+        const start_date = new Date(dateRange[0])
+        const end_date = new Date(dateRange[1])
+
+        return (start_date <= add_date) && (add_date <= end_date)
+    })
+}
+
 export const selectStatus = (state) => state.tableItems.status;
 
+export const selectDateRange = (state) => state.tableItems.dateRange;
+
 export const selectSumBill = (state) => {
-    const data = selectItemsData(state)
+    const data = selectFilteredItemsData(state)
     return data.reduce((accumulator, object) => accumulator + object.cost, 0)
 }
 
 export const selectOnePersonBill = (state) => (person) => {
-    const data = selectItemsData(state)
+    const data = selectFilteredItemsData(state)
     return data.reduce((accumulator, object) => accumulator + (object.name === person ? object.cost : 0), 0)
 };
 
