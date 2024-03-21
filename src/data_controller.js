@@ -70,7 +70,7 @@ export const people = {
 //     }
 // ]
 
-console.log(JSON.stringify(data))
+// console.log(JSON.stringify(data))
 
 export const identity_data = 100
 

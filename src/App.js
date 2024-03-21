@@ -1,38 +1,46 @@
 import React from 'react';
 import {
-    AppstoreOutlined,
-    BarChartOutlined,
-    CloudOutlined,
-    ShopOutlined,
-    TeamOutlined,
-    UploadOutlined,
-    UserOutlined,
-    ShoppingCartOutlined
-} from '@ant-design/icons';
-import {Layout, Menu, theme} from 'antd';
-import './App.css'
-import TableItems from "./components/tableItems/TableItems";
-
-const {Header, Content, Footer, Sider} = Layout;
-const items = [
-    UserOutlined,
     ShoppingCartOutlined,
-    UploadOutlined,
-    BarChartOutlined,
-    CloudOutlined,
-    AppstoreOutlined,
-    TeamOutlined,
-    ShopOutlined,
-].map((icon, index) => ({
-    key: String(index + 1),
-    icon: React.createElement(icon),
-    label: `Mục ${index + 1}`,
-}));
+    YoutubeOutlined
+} from '@ant-design/icons';
+import {Layout, Menu} from 'antd';
+import './App.css'
+import {useLocation, useNavigate, Routes, Route} from "react-router-dom";
+import ShoppingAppScreen from "./screens/shoppingApp";
+import YoutubePrPlansManagerScreen from "./screens/youtubePrPlansManager";
+
+const {Sider} = Layout;
 
 const App = () => {
-    const {
-        token: {colorBgContainer},
-    } = theme.useToken();
+    const navigate = useNavigate();
+    const selectedKey = useLocation().pathname
+
+    const highlightMenu = () => {
+        if (selectedKey === '/') {
+            return ['1']
+        } else if (selectedKey === '/youtube-pr-plans-manager') {
+            return ['2']
+        }
+    }
+
+    const menu_items = [
+        {
+            key: '1',
+            icon: React.createElement(ShoppingCartOutlined),
+            label: `Shopping App`,
+            onClick: () => {
+                navigate('/')
+            }
+        },
+        {
+            key: '2',
+            icon: React.createElement(YoutubeOutlined),
+            label: `YoutubePr Plans`,
+            onClick: () => {
+                navigate('/youtube-pr-plans-manager')
+            }
+        },
+    ];
 
     return (
         <Layout hasSider>
@@ -58,7 +66,13 @@ const App = () => {
                         </g>
                     </svg>
                 </div>
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} items={items}/>
+                <Menu
+                    theme="dark"
+                    mode="inline"
+                    defaultSelectedKeys={['1']}
+                    selectedKeys={highlightMenu()}
+                    items={menu_items}
+                />
             </Sider>
             <Layout
                 className="site-layout"
@@ -66,63 +80,10 @@ const App = () => {
                     marginLeft: 200,
                 }}
             >
-                <Header
-                    style={{
-                        padding: 0,
-                        background: colorBgContainer,
-                        textAlign: 'center',
-                        height: "max-content"
-                    }}
-                >
-                    <h1 style={{
-                        display: 'block',
-                        margin: 10
-                    }}>
-                        <ShoppingCartOutlined/> Shopping App
-                    </h1>
-                </Header>
-                <Content
-                    style={{
-                        minHeight: "80vh",
-                        margin: '24px 16px 0',
-                        overflow: 'initial',
-                    }}
-                >
-                    <div
-                        style={{
-                            padding: 24,
-                            textAlign: 'center',
-                            background: colorBgContainer,
-                        }}
-                    >
-                        <h2>Danh sách:</h2>
-                        <TableItems/>
-                        {/*<p>long content</p>*/}
-                        {/*{*/}
-                        {/*    // indicates very long content*/}
-                        {/*    Array.from(*/}
-                        {/*        {*/}
-                        {/*            length: 300,*/}
-                        {/*        },*/}
-                        {/*        (_, index) => (*/}
-                        {/*            <React.Fragment key={index}>*/}
-                        {/*                {index % 20 === 0 && index ? 'more' : '...'}*/}
-                        {/*                <br/>*/}
-                        {/*            </React.Fragment>*/}
-                        {/*        ),*/}
-                        {/*    )*/}
-                        {/*}*/}
-                    </div>
-                </Content>
-                <Footer
-                    style={{
-                        textAlign: 'center',
-                    }}
-                >
-                    <span>Ant Design ©2023 Created by Ant UED</span>
-                    <br/>
-                    <span>App Created By: <a href={"https://www.facebook.com/lcthanh.kl/"} target={"_blank"}>ThanhKL</a></span>
-                </Footer>
+                <Routes>
+                    <Route path="/" element={<ShoppingAppScreen/>}/>
+                    <Route path="/youtube-pr-plans-manager" element={<YoutubePrPlansManagerScreen/>}/>
+                </Routes>
             </Layout>
         </Layout>
     );

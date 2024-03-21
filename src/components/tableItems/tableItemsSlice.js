@@ -1,10 +1,12 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSelector, createSlice} from "@reduxjs/toolkit";
+import {
+    selectConvertedDateRange,
+} from "../../features/ReceiptsTable/DateRangePicker/dateRangePickerSlice";
 // import data from '../../data.json'
 
 const initialState = {
     itemData: [],
     status: "idle",
-    dateRange: [],
 };
 
 export const tableItemsSlice = createSlice({
@@ -49,14 +51,15 @@ export const tableItemsSlice = createSlice({
         updateItemSagaFail: (state) => {
             state.status = 'update-fail'
         },
-        setDateRange: (state, action) => {
-            state.dateRange = action.payload
-            console.log(state.dateRange)
-        },
+        // setDateRange: (state, action) => {
+        //     state.dateRange = action.payload
+        //     console.log(state.dateRange)
+        // },
     }
 })
 
-export const { fetchItems,
+export const {
+    fetchItems,
     fetchItemsSuccess,
     fetchItemsError,
     addItemSaga,
@@ -68,31 +71,52 @@ export const { fetchItems,
     updateItemSaga,
     updateItemSagaSuccess,
     updateItemSagaFail,
-    setDateRange,
+    // setDateRange,
 } = tableItemsSlice.actions;
 
-export const selectItemsData = (state) => state.tableItems.itemData;
+const selectItemsData = (state) => state.tableItems.itemData;
 
-export const selectFilteredItemsData = (state) => {
-    const itemsData = selectItemsData(state)
-    const dateRange = selectDateRange(state)
+export const selectFilteredItemsData=
+    createSelector(
+        [selectItemsData, selectConvertedDateRange],
+        (itemsData, dateRange) => {
 
-    if (dateRange.length === 0) {
-        return itemsData
+        // const itemsData = selectItemsData(state)
+        // const dateRange = selectConvertedDateRange(state)
+
+        if (dateRange.length === 0) {
+            return itemsData
+        }
+
+        return itemsData.filter((item) => {
+            const add_date = new Date(Number(item.add_date))
+            const start_date = new Date(dateRange[0])
+            const end_date = new Date(dateRange[1])
+
+            return (start_date <= add_date) && (add_date <= end_date)
+        })
     }
+)
 
-    return itemsData.filter((item) => {
-        const add_date = new Date(Number(item.add_date))
-        const start_date = new Date(dateRange[0])
-        const end_date = new Date(dateRange[1])
-
-        return (start_date <= add_date) && (add_date <= end_date)
-    })
-}
+// ===== THIS FUNCTION ISN'T MEMOIZED SELECTOR =====
+// export const selectFilteredItemsData = (state) => {
+//     const itemsData = selectItemsData(state)
+//     const dateRange = selectConvertedDateRange(state)
+//
+//     if (dateRange.length === 0) {
+//         return itemsData
+//     }
+//
+//     return itemsData.filter((item) => {
+//         const add_date = new Date(Number(item.add_date))
+//         const start_date = new Date(dateRange[0])
+//         const end_date = new Date(dateRange[1])
+//
+//         return (start_date <= add_date) && (add_date <= end_date)
+//     })
+// }
 
 export const selectStatus = (state) => state.tableItems.status;
-
-export const selectDateRange = (state) => state.tableItems.dateRange;
 
 export const selectSumBill = (state) => {
     const data = selectFilteredItemsData(state)
@@ -103,5 +127,11 @@ export const selectOnePersonBill = (state) => (person) => {
     const data = selectFilteredItemsData(state)
     return data.reduce((accumulator, object) => accumulator + (object.name === person ? object.cost : 0), 0)
 };
+
+// ===== THIS FUNCTION IS MEMOIZED SELECTOR =====
+export const onePersonSumBillSelector=
+    createSelector([selectOnePersonBill], (onePersonBill) => {
+        return onePersonBill
+    })
 
 export default tableItemsSlice.reducer;

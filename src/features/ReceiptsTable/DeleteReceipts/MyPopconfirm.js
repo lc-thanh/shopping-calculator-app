@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import { Button, Popconfirm, message } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import {useDispatch, useSelector} from "react-redux";
-import {selectStatus} from "../tableItems/tableItemsSlice";
-import {fetchItems, deleteItemsSaga} from "../tableItems/tableItemsSlice";
-const DeletePopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
+import {selectStatus} from "../../../components/tableItems/tableItemsSlice";
+import {deleteItemsSaga} from "../../../components/tableItems/tableItemsSlice";
+const MyPopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
     const deleteStatus = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         if (deleteStatus === 'loading-delete') {
@@ -16,9 +15,6 @@ const DeletePopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
         }
         if (deleteStatus === 'delete-success') {
             setConfirmLoading(false)
-            setTimeout(() => {
-                dispatch(fetchItems())
-            }, 500)
             setOpen(false)
             resetSelectedRowKeys()
         }
@@ -26,7 +22,7 @@ const DeletePopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
             setConfirmLoading(false)
             setOpen(false)
         }
-    }, [deleteStatus])
+    }, [deleteStatus, resetSelectedRowKeys])
 
     const hasSelected = selectedRowKeys.length > 0;
     const showPopconfirm = () => {
@@ -41,7 +37,6 @@ const DeletePopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
     };
     return (
         <>
-            {contextHolder}
             <Popconfirm
                 title="Xác nhận"
                 description="Bạn có muốn xóa các hóa đơn đã chọn?"
@@ -62,4 +57,4 @@ const DeletePopconfirm = ({ selectedRowKeys, resetSelectedRowKeys }) => {
         </>
     );
 };
-export default DeletePopconfirm;
+export default MyPopconfirm;

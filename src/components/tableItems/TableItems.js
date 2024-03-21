@@ -1,19 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Table, Space, Button, message, Spin} from 'antd';
-// import {Backup_AddItemModal} from "../Modal/Backup_AddItemModal";
 import {people} from "../../data_controller";
-import AddItemFormInModel from "../Modal/AddItemFormInModel";
-import UpdateItemFormInModel from "../Modal/UpdateItemFormInModel";
+import AddReceiptForm from "../../features/ReceiptsTable/AddReceipt/FormInModal";
+import UpdateReceiptForm from "../../features/ReceiptsTable/UpdateReceipt/FormInModal";
 import {useDispatch, useSelector} from "react-redux";
 import {
     fetchItems,
     selectStatus,
     selectSumBill,
-    selectOnePersonBill,
-    selectFilteredItemsData
+    selectFilteredItemsData,
+    onePersonSumBillSelector
 } from "./tableItemsSlice";
-import DeletePopconfirm from "../Popconfirm/DeletePopconfirm";
-import MonthSelectDropDown from "../DropDown/MonthSelectDropDown";
+import DeleteReceiptsPopconfirm from "../../features/ReceiptsTable/DeleteReceipts/MyPopconfirm";
+import DateRangePickerDropDown from "../../features/ReceiptsTable/DateRangePicker/DropDown";
 // import data from '../../data.json'
 
 const formatter = new Intl.NumberFormat('vi', {
@@ -87,10 +86,6 @@ const columns = [
                 text: 'Nợ',
                 value: 'nợ',
             },
-            // {
-            //     text: 'Thịt',
-            //     value: 'Thịt',
-            // },
         ],
         onFilter: (value, record) => record.item.toLowerCase().includes(value.toLowerCase()),
     },
@@ -116,10 +111,17 @@ const columns = [
     },
     {
         title: 'Chức năng',
-        render: (_, record) => (
-            <UpdateItemFormInModel formName={'update-form-' + record.key} defaultName={record.name}
-                                   defaultItem={record.item} defaultCost={record.cost} defaultNote={record.note}/>
-        ),
+        render: (_, record) => {
+            const defaultValues = {
+                defaultName: record.name,
+                defaultItem: record.item,
+                defaultCost: record.cost,
+                defaultNote: record.note,
+            }
+            return (
+                <UpdateReceiptForm formName={'update-form-' + record.key} defaultValues={defaultValues}/>
+            )
+        },
         align: "center",
     }
 ];
@@ -128,10 +130,26 @@ const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
 };
 
+export const openMessage = (type) => {
+    switch (type) {
+        case 'success':
+            message.open({
+                type: 'success',
+                content: 'Lấy dữ liệu thành công!',
+                style: {
+                    marginLeft: 200
+                },
+            });
+            break
+        default:
+            break
+    }
+}
+
 const TableItems = () => {
     const items_data = useSelector(selectFilteredItemsData)
     const sumBill = useSelector(selectSumBill)
-    const onePersonBill = useSelector(selectOnePersonBill)
+    const onePersonBill = useSelector(onePersonSumBillSelector)
     // const items_data = data
     const table_status = useSelector(selectStatus)
     const dispatch = useDispatch()
@@ -154,13 +172,6 @@ const TableItems = () => {
 
             case 'fetch-success': {
                 setLoading(false)
-                messageApi.open({
-                    type: 'success',
-                    content: 'Lấy dữ liệu thành công!',
-                    style: {
-                        marginLeft: 200
-                    },
-                });
                 break
             }
 
@@ -305,11 +316,12 @@ const TableItems = () => {
                         <Button type="primary" onClick={startFetchItems} loading={loading}>
                             Reload
                         </Button>
-                        <AddItemFormInModel />
-                        <DeletePopconfirm selectedRowKeys={selectedRowKeys} resetSelectedRowKeys={resetSelectedRowKeys} />
+                        <AddReceiptForm />
+                        <DeleteReceiptsPopconfirm selectedRowKeys={selectedRowKeys}
+                                    resetSelectedRowKeys={resetSelectedRowKeys}/>
                     </Space>
                 </div>
-                <MonthSelectDropDown />
+                <DateRangePickerDropDown/>
             </div>
 
             <Spin spinning={loading}>

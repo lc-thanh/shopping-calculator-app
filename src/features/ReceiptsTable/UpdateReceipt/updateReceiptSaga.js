@@ -1,5 +1,5 @@
-import { takeLatest, call, put } from 'redux-saga/effects'
-import { updateItemSaga, updateItemSagaSuccess, updateItemSagaFail } from "../tableItems/tableItemsSlice";
+import { takeLatest, call, put, delay } from 'redux-saga/effects'
+import {updateItemSaga, updateItemSagaSuccess, updateItemSagaFail, fetchItems} from "../../../components/tableItems/tableItemsSlice";
 import axios from "axios";
 
 function fetchHttpApi(payload) {
@@ -9,7 +9,7 @@ function fetchHttpApi(payload) {
 
     return axios({
         method: "PUT",
-        url: "https://api-shopping-calculation-app.onrender.com/api/v1/receipts/" + key,
+        url: process.env.REACT_APP_API_PUT + key,
         data: {
             name: payload.name,
             item: payload.item,
@@ -24,6 +24,8 @@ function* updateItemWorker(action) {
         yield call(fetchHttpApi, action.payload)
 
         yield put(updateItemSagaSuccess())
+        yield delay(1000)
+        yield put(fetchItems())
     } catch(error) {
         console.log(error)
         yield put(updateItemSagaFail())

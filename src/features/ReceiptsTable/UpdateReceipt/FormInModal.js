@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, InputNumber, Modal, Radio, Space} from 'antd';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchItems, selectStatus, updateItemSaga} from "../tableItems/tableItemsSlice";
+import {selectStatus, updateItemSaga} from "../../../components/tableItems/tableItemsSlice";
 const { TextArea } = Input;
-const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, defaultName, defaultItem, defaultCost, defaultNote }) => {
+const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, defaultValues }) => {
     const [updateForm] = Form.useForm();
 
     const startUpdateItem = () => {
@@ -39,7 +39,7 @@ const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, def
             //             console.log('Validate Failed:', info);
             //         });
             // }}
-            footer={[
+            footer={
                 <Space>
                     <Button
                         onClick={() => {
@@ -55,17 +55,17 @@ const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, def
                         Sửa
                     </Button>
                 </Space>
-            ]}
+            }
         >
             <Form
                 form={updateForm}
                 layout="vertical"
                 name={formName}
                 initialValues={{
-                    name: defaultName,
-                    item: defaultItem,
-                    cost: defaultCost,
-                    note: defaultNote
+                    name: defaultValues.defaultName,
+                    item: defaultValues.defaultItem,
+                    cost: defaultValues.defaultCost,
+                    note: defaultValues.defaultNote
                 }}
             >
                 <Form.Item
@@ -107,7 +107,7 @@ const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, def
                     rules={[
                         {
                             required: true,
-                            message: 'Điền đi! Đ được để trống!',
+                            message: 'Điền đi! Không được để trống!',
                         },
                     ]}
                 >
@@ -132,7 +132,7 @@ const CollectionCreateForm = ({ open, loading, onCreate, onCancel, formName, def
         </Modal>
     );
 };
-const AddItemFormInModel = ({ formName, defaultName, defaultItem, defaultCost, defaultNote }) => {
+const FormInModal = ({ formName, defaultValues }) => {
     const updateStatus = useSelector(selectStatus)
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false);
@@ -145,12 +145,11 @@ const AddItemFormInModel = ({ formName, defaultName, defaultItem, defaultCost, d
         if (updateStatus === 'update-success') {
             setLoading(false)
             setOpen(false)
-            dispatch(fetchItems())
         }
         if (updateStatus === 'update-fail') {
             setLoading(false)
         }
-    }, [updateStatus])
+    }, [dispatch, updateStatus])
 
     const onCreate = (values) => {
         dispatch(updateItemSaga({...values, formName}))
@@ -175,12 +174,9 @@ const AddItemFormInModel = ({ formName, defaultName, defaultItem, defaultCost, d
                     setOpen(false);
                 }}
                 formName={formName}
-                defaultName={defaultName}
-                defaultItem={defaultItem}
-                defaultCost={defaultCost}
-                defaultNote={defaultNote}
+                defaultValues={defaultValues}
             />
         </div>
     );
 };
-export default AddItemFormInModel;
+export default FormInModal;

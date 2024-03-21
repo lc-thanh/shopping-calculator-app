@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, InputNumber, Modal, Radio, Space} from 'antd';
 import {useDispatch, useSelector} from "react-redux";
-import {fetchItems, addItemSaga, selectStatus} from "../tableItems/tableItemsSlice";
+import {addItemSaga, selectStatus} from "../../../components/tableItems/tableItemsSlice";
 const { TextArea } = Input;
 const CollectionCreateForm = ({ open, onExit, onCancel }) => {
     const addStatus = useSelector(selectStatus)
@@ -33,7 +33,7 @@ const CollectionCreateForm = ({ open, onExit, onCancel }) => {
         if (addStatus === 'add-fail') {
             setLoading(false)
         }
-    }, [addStatus])
+    }, [addStatus, form, onExit])
 
     return (
         <Modal
@@ -53,7 +53,7 @@ const CollectionCreateForm = ({ open, onExit, onCancel }) => {
             //             console.log('Validate Failed:', info);
             //         });
             // }}
-            footer={[
+            footer={
                 <Space>
                     <Button
                         onClick={onCancel}
@@ -66,7 +66,7 @@ const CollectionCreateForm = ({ open, onExit, onCancel }) => {
                         Thêm
                     </Button>
                 </Space>
-            ]}
+            }
         >
             <Form
                 form={form}
@@ -140,13 +140,11 @@ const CollectionCreateForm = ({ open, onExit, onCancel }) => {
         </Modal>
     );
 };
-const AddItemFormInModel = () => {
-    const dispatch = useDispatch()
+const FormInModal = () => {
     const [open, setOpen] = useState(false);
     const onExit = () => {
         console.log('Thêm dữ liệu thành công!');
         setOpen(false);
-        dispatch(fetchItems());
     };
     return (
         <div>
@@ -168,4 +166,4 @@ const AddItemFormInModel = () => {
         </div>
     );
 };
-export default AddItemFormInModel;
+export default FormInModal;
