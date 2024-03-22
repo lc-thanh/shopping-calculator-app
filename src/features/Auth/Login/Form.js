@@ -1,23 +1,24 @@
 import React, {useState} from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
-const onFinish = (values) => {
-    console.log('Success:', values);
-};
-const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
-const LoginForm = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
 
-    const onSubmitHandle = (e) => {
-        e.preventDefault()
-        const login_user = {
-            username: username,
-            password: password,
-        }
-        console.log(login_user)
-    }
+const LoginForm = () => {
+    // const [username, setUsername] = useState('')
+    // const [password, setPassword] = useState('')
+
+    const onFinish = (values) => {
+        console.log('Success:', values);
+    };
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+    // const onSubmitHandle = (e) => {
+    //     // e.preventDefault()
+    //     const login_user = {
+    //         username: username,
+    //         password: password,
+    //     }
+    //     console.log(login_user)
+    // }
 
     return (
         <Form
@@ -40,7 +41,7 @@ const LoginForm = () => {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
-            onSubmit={onSubmitHandle}
+            // onSubmit={onSubmitHandle}
         >
             <Form.Item
                 label="Username"
@@ -52,7 +53,8 @@ const LoginForm = () => {
                     },
                 ]}
             >
-                <Input onChange={(target) => {setUsername(target.value)}}/>
+                {/*<Input onChange={(target) => {setUsername(target.value)}}/>*/}
+                <Input />
             </Form.Item>
 
             <Form.Item
@@ -65,12 +67,13 @@ const LoginForm = () => {
                     },
                 ]}
             >
-                <Input.Password onChange={(target) => {setPassword(target.value)}}/>
+                {/*<Input.Password onChange={(target) => {setPassword(target.value)}}/>*/}
+                <Input.Password />
             </Form.Item>
 
             <Form.Item
                 name="remember"
-                // valuePropName="checked"
+                valuePropName="checked"
                 wrapperCol={{
                     offset: 8,
                     span: 16,

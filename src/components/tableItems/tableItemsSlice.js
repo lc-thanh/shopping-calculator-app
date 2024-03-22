@@ -95,8 +95,7 @@ export const selectFilteredItemsData=
 
             return (start_date <= add_date) && (add_date <= end_date)
         })
-    }
-)
+    })
 
 // ===== THIS FUNCTION ISN'T MEMOIZED SELECTOR =====
 // export const selectFilteredItemsData = (state) => {

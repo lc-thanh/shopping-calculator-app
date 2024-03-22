@@ -31,6 +31,7 @@ const ShoppingAppScreen = () => {
                 style={{
                     minHeight: "80vh",
                     margin: '24px 16px 0',
+                    minWidth: 'fit-content',
                     overflow: 'initial',
                 }}
             >
